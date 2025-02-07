@@ -1,109 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Responsive Solar System</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar System Animation</title>
     <style>
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        width: 100vw;
-        background-color: black;
-        overflow: hidden;
-        background-image: radial-gradient(
-          circle,
-          rgba(255, 255, 255, 0.1) 1%,
-          transparent 10%
-        );
-      }
-      .orbit {
-        position: relative;
-        width: 80vmin;
-        height: 80vmin;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .sun {
-        position: absolute;
-        width: 10vmin;
-        height: 10vmin;
-        background: radial-gradient(circle, yellow, orange, red);
-        border-radius: 50%;
-        box-shadow: 0 0 5vmin rgba(255, 200, 0, 0.9);
-      }
-      .planet {
-        position: absolute;
-        border-radius: 50%;
-        box-shadow: 0 0 1vmin rgba(255, 255, 255, 0.8);
-        will-change: transform;
-      }
-      .orbit-path {
-        position: absolute;
-        border: 0.1vmin dashed rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
-      }
-      .saturn-ring {
-        position: absolute;
-        width: 2.5vmin;
-        height: 0.8vmin;
-        background: rgba(255, 215, 0, 0.6);
-        border-radius: 50%;
-        transform: rotate(45deg);
-      }
-    </style>
-  </head>
-  <body>
-    <div class="orbit">
-      <div class="sun"></div>
-      <script>
-        const planets = [
-          { color: "gray", size: 0.6, radius: 6, speed: 8.3 },
-          { color: "orange", size: 1.2, radius: 8, speed: 3.24 },
-          { color: "blue", size: 1.4, radius: 10, speed: 2.0 },
-          { color: "red", size: 1, radius: 12, speed: 1.06 },
-          { color: "brown", size: 2.4, radius: 14, speed: 0.8 },
-          { color: "gold", size: 2.2, radius: 16, speed: 0.5 },
-          { color: "lightblue", size: 1.8, radius: 18, speed: 0.3 },
-          { color: "darkblue", size: 1.6, radius: 20, speed: 0.2 },
-          { color: "white", size: 0.5, radius: 22, speed: 0.1 },
-        ];
-
-        const orbit = document.querySelector(".orbit");
-        const planetElements = [];
-
-        planets.forEach((planet) => {
-          let orbitPath = document.createElement("div");
-          orbitPath.classList.add("orbit-path");
-          orbitPath.style.width = `${planet.radius * 3}vmin`;
-          orbitPath.style.height = `${planet.radius * 3}vmin`;
-          orbit.appendChild(orbitPath);
-
-          let planetEl = document.createElement("div");
-          planetEl.classList.add("planet");
-          planetEl.style.backgroundColor = planet.color;
-          planetEl.style.width = `${planet.size}vmin`;
-          planetEl.style.height = `${planet.size}vmin`;
-          orbit.appendChild(planetEl);
-          planetElements.push({ el: planetEl, ...planet });
-        });
-
-        function animate() {
-          const now = performance.now() * 0.0002;
-          planetElements.forEach((planet) => {
-            let angle = now * planet.speed;
-            let x = planet.radius * 1.5 * Math.cos(angle);
-            let y = planet.radius * 1.5 * Math.sin(angle);
-            planet.el.style.transform = `translate3d(${x}vmin, ${y}vmin, 0)`;
-          });
-          requestAnimationFrame(animate);
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+            overflow: hidden;
+            position: relative;
         }
-        requestAnimationFrame(animate);
-      </script>
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            background-color: white;
+            animation: twinkle 2s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% {
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        .orbit {
+            position: relative;
+            width: min(90vw, 750px);
+            height: min(90vw, 750px);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .sun {
+            position: absolute;
+            width: min(15vw, 120px);
+            height: min(15vw, 120px);
+            background: radial-gradient(circle, yellow, orange, red);
+            border-radius: 50%;
+            box-shadow: 0 0 60px rgba(255, 200, 0, 0.9);
+        }
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            transition: transform 0.1s linear;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+        .orbit-path {
+            position: absolute;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+        }
+        .saturn-ring {
+            position: absolute;
+            width: 140%;
+            height: 40%;
+            background: rgba(255, 215, 0, 0.6);
+            border-radius: 50%;
+            transform: rotate(45deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="orbit">
+        <div class="sun"></div>
     </div>
-  </body>
+    <script>
+        const orbitElement = document.querySelector('.orbit');
+        const starContainer = document.querySelector('.stars');
+        const sunSize = Math.min(window.innerWidth * 0.15, 120);
+        const orbitSize = Math.min(window.innerWidth * 0.9, 750);
+        
+        // Create realistic stars with random sizes, positions, and animation speeds
+        function createStars(numStars) {
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+
+                // Randomize star properties
+                const size = Math.random() * 2 + 1; // Random size between 1px and 3px
+                const left = Math.random() * 100; // Random left position percentage
+                const top = Math.random() * 100; // Random top position percentage
+                const animationDuration = Math.random() * 2 + 1; // Random twinkle speed between 1s and 3s
+                const opacity = Math.random() * 0.7 + 0.3; // Random opacity between 0.3 and 1
+
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${left}%`;
+                star.style.top = `${top}%`;
+                star.style.opacity = opacity;
+                star.style.animationDuration = `${animationDuration}s`;
+
+                starContainer.appendChild(star);
+            }
+        }
+        createStars(500); // Adjust the number of stars
+
+        const planets = [
+            { id: 'mercury', radius: orbitSize * 0.1, size: 8, speed: 8.3, color: 'gray' },
+            { id: 'venus', radius: orbitSize * 0.15, size: 14, speed: 3.24, color: 'orange' },
+            { id: 'earth', radius: orbitSize * 0.2, size: 16, speed: 2.00, color: 'blue' },
+            { id: 'mars', radius: orbitSize * 0.25, size: 12, speed: 1.06, color: 'red' },
+            { id: 'jupiter', radius: orbitSize * 0.3, size: 30, speed: 0.8, color: 'brown' },
+            { id: 'saturn', radius: orbitSize * 0.35, size: 26, speed: 0.5, color: 'gold' },
+            { id: 'uranus', radius: orbitSize * 0.4, size: 22, speed: 0.3, color: 'lightblue' },
+            { id: 'neptune', radius: orbitSize * 0.45, size: 20, speed: 0.2, color: 'darkblue' },
+            { id: 'pluto', radius: orbitSize * 0.5, size: 6, speed: 0.1, color: 'white' }
+        ];
+        
+        planets.forEach(planet => {
+            const orbitPath = document.createElement('div');
+            orbitPath.classList.add('orbit-path');
+            orbitPath.style.width = `${planet.radius * 2}px`;
+            orbitPath.style.height = `${planet.radius * 2}px`;
+            orbitElement.appendChild(orbitPath);
+            
+            const planetElement = document.createElement('div');
+            planetElement.classList.add('planet');
+            planetElement.id = planet.id;
+            planetElement.style.backgroundColor = planet.color;
+            planetElement.style.width = `${planet.size}px`;
+            planetElement.style.height = `${planet.size}px`;
+            orbitElement.appendChild(planetElement);
+        });
+        
+        function animate() {
+            const now = performance.now();
+            planets.forEach(planet => {
+                let angle = now * planet.speed * 0.0002;
+                let x = planet.radius * Math.cos(angle);
+                let y = planet.radius * Math.sin(angle);
+                document.getElementById(planet.id).style.transform = `translate(${x}px, ${y}px)`;
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
 </html>
