@@ -18,7 +18,9 @@
           rgba(255, 255, 255, 0.1) 1%,
           transparent 10%
         );
+        transition: transform 0.3s ease; /* Smooth zoom transition */
       }
+
       .orbit {
         position: relative;
         width: 80vmin;
@@ -27,7 +29,9 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        transform-origin: center; /* Ensures zoom is centered */
       }
+
       .sun {
         position: absolute;
         width: 10vmin;
@@ -36,17 +40,20 @@
         border-radius: 50%;
         box-shadow: 0 0 5vmin rgba(255, 200, 0, 0.9);
       }
+
       .planet {
         position: absolute;
         border-radius: 50%;
-        transition: transform 0.1s linear;
         box-shadow: 0 0 1vmin rgba(255, 255, 255, 0.8);
+        will-change: transform;
       }
+
       .orbit-path {
         position: absolute;
         border: 0.1vmin dashed rgba(255, 255, 255, 0.2);
         border-radius: 50%;
       }
+
       .saturn-ring {
         position: absolute;
         width: 2.5vmin;
@@ -74,7 +81,9 @@
         ];
 
         const orbit = document.querySelector(".orbit");
-        planets.forEach((planet, index) => {
+        const planetElements = [];
+
+        planets.forEach((planet) => {
           let orbitPath = document.createElement("div");
           orbitPath.classList.add("orbit-path");
           orbitPath.style.width = `${planet.radius * 3}vmin`;
@@ -86,23 +95,34 @@
           planetEl.style.backgroundColor = planet.color;
           planetEl.style.width = `${planet.size}vmin`;
           planetEl.style.height = `${planet.size}vmin`;
-          planetEl.dataset.index = index;
           orbit.appendChild(planetEl);
+          planetElements.push({ el: planetEl, ...planet });
         });
 
         function animate() {
-          const now = performance.now();
-          document.querySelectorAll(".planet").forEach((planetEl) => {
-            let index = planetEl.dataset.index;
-            let planet = planets[index];
-            let angle = now * planet.speed * 0.0002;
+          const now = performance.now() * 0.0002;
+          planetElements.forEach((planet) => {
+            let angle = now * planet.speed;
             let x = planet.radius * 1.5 * Math.cos(angle);
             let y = planet.radius * 1.5 * Math.sin(angle);
-            planetEl.style.transform = `translate(${x}vmin, ${y}vmin)`;
+            planet.el.style.transform = `translate3d(${x}vmin, ${y}vmin, 0)`;
           });
           requestAnimationFrame(animate);
         }
-        animate();
+        requestAnimationFrame(animate);
+
+        // Zooming functionality
+        let zoomLevel = 1; // Default zoom level
+
+        // Handle mousewheel zooming
+        document.body.addEventListener('wheel', (event) => {
+          if (event.deltaY < 0) {
+            zoomLevel += 0.1; // Zoom in
+          } else {
+            zoomLevel = Math.max(zoomLevel - 0.1, 0.5); // Zoom out but don't go below 0.5
+          }
+          document.body.style.transform = `scale(${zoomLevel})`;
+        });
       </script>
     </div>
   </body>
