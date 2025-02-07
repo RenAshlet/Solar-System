@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solar System</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: black;
+        overflow: hidden;
+        background-image: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 1%,
+          transparent 10%
+        );
+      }
+      .orbit {
+        position: relative;
+        width: 750px;
+        height: 750px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .sun {
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        background: radial-gradient(circle, yellow, orange, red);
+        border-radius: 50%;
+        box-shadow: 0 0 60px rgba(255, 200, 0, 0.9);
+      }
+      .planet {
+        position: absolute;
+        border-radius: 50%;
+        transition: transform 0.1s linear;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      }
+      .orbit-path {
+        position: absolute;
+        border: 1px dashed rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+      }
+      .saturn-ring {
+        position: absolute;
+        width: 28px;
+        height: 10px;
+        background: rgba(255, 215, 0, 0.6);
+        border-radius: 50%;
+        transform: rotate(45deg);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="orbit">
+      <div class="sun"></div>
+      <div class="orbit-path" style="width: 150px; height: 150px"></div>
+      <div
+        class="planet"
+        id="mercury"
+        style="background-color: gray; width: 8px; height: 8px"
+      ></div>
+      <div class="orbit-path" style="width: 200px; height: 200px"></div>
+      <div
+        class="planet"
+        id="venus"
+        style="background-color: orange; width: 14px; height: 14px"
+      ></div>
+      <div class="orbit-path" style="width: 250px; height: 250px"></div>
+      <div
+        class="planet"
+        id="earth"
+        style="background-color: blue; width: 16px; height: 16px"
+      ></div>
+      <div class="orbit-path" style="width: 300px; height: 300px"></div>
+      <div
+        class="planet"
+        id="mars"
+        style="background-color: red; width: 12px; height: 12px"
+      ></div>
+      <div class="orbit-path" style="width: 350px; height: 350px"></div>
+      <div
+        class="planet"
+        id="jupiter"
+        style="background-color: brown; width: 30px; height: 30px"
+      ></div>
+      <div class="orbit-path" style="width: 400px; height: 400px"></div>
+      <div
+        class="planet"
+        id="saturn"
+        style="background-color: gold; width: 26px; height: 26px"
+      >
+        <div class="saturn-ring"></div>
+      </div>
+      <div class="orbit-path" style="width: 450px; height: 450px"></div>
+      <div
+        class="planet"
+        id="uranus"
+        style="background-color: lightblue; width: 22px; height: 22px"
+      ></div>
+      <div class="orbit-path" style="width: 500px; height: 500px"></div>
+      <div
+        class="planet"
+        id="neptune"
+        style="background-color: darkblue; width: 20px; height: 20px"
+      ></div>
+      <div class="orbit-path" style="width: 550px; height: 550px"></div>
+      <div
+        class="planet"
+        id="pluto"
+        style="background-color: white; width: 6px; height: 6px"
+      ></div>
+    </div>
+    <script>
+      const planets = [
+        { id: "mercury", radius: 75, speed: 8.3 },
+        { id: "venus", radius: 100, speed: 3.24 },
+        { id: "earth", radius: 125, speed: 2.0 },
+        { id: "mars", radius: 150, speed: 1.06 },
+        { id: "jupiter", radius: 175, speed: 0.8 },
+        { id: "saturn", radius: 200, speed: 0.5 },
+        { id: "uranus", radius: 225, speed: 0.3 },
+        { id: "neptune", radius: 250, speed: 0.2 },
+        { id: "pluto", radius: 275, speed: 0.1 },
+      ];
+
+      function animate() {
+        const now = performance.now();
+        planets.forEach((planet) => {
+          let angle = now * planet.speed * 0.0002;
+          let x = planet.radius * Math.cos(angle);
+          let y = planet.radius * Math.sin(angle);
+          document.getElementById(
+            planet.id
+          ).style.transform = `translate(${x}px, ${y}px)`;
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    </script>
+  </body>
+</html>
